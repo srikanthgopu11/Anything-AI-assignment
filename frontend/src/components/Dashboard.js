@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useState, useCallback } from 'react';
 import axios from 'axios';
 import '../App.css';
 
@@ -8,7 +8,7 @@ const Dashboard = () => {
     const token = localStorage.getItem('token');
     const role = localStorage.getItem('role');
 
-    const fetchTasks = async () => {
+    const fetchTasks = useCallback(async () => {
         try {
             const res = await axios.get('https://task-manager-api-wkgn.onrender.com/api/v1/tasks', {
                 headers: { Authorization: `Bearer ${token}` }
@@ -17,7 +17,7 @@ const Dashboard = () => {
         } catch (err) {
             console.error("Failed to fetch tasks");
         }
-    };
+    }, [token]);
 
     const addTask = async () => {
         if (!title) return;
@@ -44,16 +44,19 @@ const Dashboard = () => {
     };
 
     useEffect(() => {
-        if (token) fetchTasks();
-        else window.location.href = '/login';
-    }, []);
+        if (token) {
+            fetchTasks();
+        } else {
+            window.location.href = '/login';
+        }
+    }, [token, fetchTasks]); 
 
     return (
         <div className="dashboard-container">
             <div className="header">
                 <div>
-                    <h1>Task Management</h1>
-                    <p>Role: <strong style={{color: '#4f46e5'}}>{role.toUpperCase()}</strong></p>
+                    <h1>Task Manager</h1>
+                    <p>Role: <strong>{role ? role.toUpperCase() : ''}</strong></p>
                 </div>
                 <button className="logout-btn" onClick={() => { localStorage.clear(); window.location.href='/login'; }}>
                     Logout
@@ -61,29 +64,23 @@ const Dashboard = () => {
             </div>
 
             <div className="auth-card" style={{maxWidth: '100%', marginBottom: '20px'}}>
-                <h3>Create New Task</h3>
+                <h3>Add Task</h3>
                 <div style={{display: 'flex', gap: '10px'}}>
-                    <input 
-                        value={title} 
-                        onChange={(e) => setTitle(e.target.value)} 
-                        placeholder="Enter task title..." 
-                    />
-                    <button onClick={addTask} style={{width: '150px'}}>Add Task</button>
+                    <input value={title} onChange={(e) => setTitle(e.target.value)} placeholder="Task title..." />
+                    <button onClick={addTask} style={{width: '150px'}}>Add</button>
                 </div>
             </div>
 
-            <div className="task-list">
-                <h3>{role === 'admin' ? "All Users' Tasks" : "Your Tasks"}</h3>
-                {tasks.length === 0 ? <p>No tasks found.</p> : tasks.map(t => (
-                    <div key={t.id} className="task-card">
-                        <div className="task-info">
-                            <h4>{t.title}</h4>
-                            <small>Created by User ID: {t.userId}</small>
-                        </div>
-                        <button className="delete-btn" onClick={() => deleteTask(t.id)}>Delete</button>
+            <h3>Tasks</h3>
+            {tasks.map(t => (
+                <div key={t.id} className="task-card">
+                    <div className="task-info">
+                        <h4>{t.title}</h4>
+                        <small>Owner ID: {t.userId}</small>
                     </div>
-                ))}
-            </div>
+                    <button className="delete-btn" onClick={() => deleteTask(t.id)}>Delete</button>
+                </div>
+            ))}
         </div>
     );
 };
