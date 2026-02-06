@@ -11,7 +11,7 @@ const Login = () => {
     const handleLogin = async (e) => {
         e.preventDefault();
         try {
-            const res = await axios.post('http://localhost:5000/api/v1/auth/login', { email, password });
+            const res = await axios.post('https://task-manager-api-wkgn.onrender.com/api/v1/auth/login', { email, password });
             localStorage.setItem('token', res.data.token);
             localStorage.setItem('role', res.data.role);
             navigate('/dashboard');
