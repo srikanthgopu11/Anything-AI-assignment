@@ -10,7 +10,7 @@ const Dashboard = () => {
 
     const fetchTasks = async () => {
         try {
-            const res = await axios.get('http://localhost:5000/api/v1/tasks', {
+            const res = await axios.get('https://task-manager-api-wkgn.onrender.com/api/v1/tasks', {
                 headers: { Authorization: `Bearer ${token}` }
             });
             setTasks(res.data);
@@ -22,7 +22,7 @@ const Dashboard = () => {
     const addTask = async () => {
         if (!title) return;
         try {
-            await axios.post('http://localhost:5000/api/v1/tasks', { title }, {
+            await axios.post('https://task-manager-api-wkgn.onrender.com/api/v1/tasks', { title }, {
                 headers: { Authorization: `Bearer ${token}` }
             });
             setTitle('');
@@ -34,7 +34,7 @@ const Dashboard = () => {
 
     const deleteTask = async (id) => {
         try {
-            await axios.delete(`http://localhost:5000/api/v1/tasks/${id}`, {
+            await axios.delete(`https://task-manager-api-wkgn.onrender.com/api/v1/tasks/${id}`, {
                 headers: { Authorization: `Bearer ${token}` }
             });
             fetchTasks();
