@@ -12,6 +12,7 @@ app.use(express.json());
 app.use('/api/v1/auth', authRoutes);
 app.use('/api/v1/tasks', taskRoutes);
 
+const PORT = process.env.PORT || 5000;
 sequelize.sync().then(() => {
-    app.listen(5000, () => console.log('Server running on http://localhost:5000'));
+    app.listen(PORT, () => console.log(`Server running on port ${PORT}`));
 });

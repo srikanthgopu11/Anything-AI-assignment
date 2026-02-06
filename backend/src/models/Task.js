@@ -9,7 +9,6 @@ const Task = sequelize.define('Task', {
     status: { type: DataTypes.STRING, defaultValue: 'pending' }
 });
 
-// Relationship
 User.hasMany(Task, { foreignKey: 'userId', onDelete: 'CASCADE' });
 Task.belongsTo(User, { foreignKey: 'userId' });
 
